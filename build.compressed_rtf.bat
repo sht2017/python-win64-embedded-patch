@@ -21,7 +21,6 @@ goto main
     exit /b 0
 
 :main
-    call init %PYTHON_VERSION%
     call env
     set "TAG=BUILD COMPRESSED RTF"
     call :log "+downloading"
@@ -54,8 +53,12 @@ goto main
     popd
     call :log "-built"
     call :log "+cleaning"
-    del /f /s /q *.zip >nul 2>&1 || (
+    del /f /q *.zip >nul 2>&1 || (
         call :log "-!failed(when_removing_zip)"
+        exit /b 1
+    )
+    del /f /q *.whl >nul 2>&1 || (
+        call :log "-!failed(when_removing_whl)"
         exit /b 1
     )
     pushd "%~dp0compressed_rtf*\dist" || (
