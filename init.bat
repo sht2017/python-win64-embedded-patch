@@ -171,7 +171,7 @@ goto :main
     )
 
     call :log "+venv_patching"
-    move "%TEMP_DIR%\PYTHON\Lib\venv" "%EMBPY_DIR%\Lib\site-packages"
+    move "%TEMP_DIR%\PYTHON\Lib\venv" "%EMBPY_DIR%\Lib\site-packages" >nul 2>&1 || exit /b 1
     call :log "-venv_patched"
 
     call :log "+cleaning"
