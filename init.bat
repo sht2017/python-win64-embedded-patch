@@ -9,7 +9,7 @@ set "ARCHIVE=%TEMP_DIR%\archive.tmp"
 
 :: Version handling
 if "%~1"=="" (
-    set /p PYTHON_VERSION=?:version
+    set /p PYTHON_VERSION=?:version^=^>
 ) else (
     set "PYTHON_VERSION=%~1"
 )
@@ -163,12 +163,13 @@ goto :main
         call :log "-%%L_downloaded"
         
         call :log "+%%L_extracting"
-        msiexec /a "%ARCHIVE%.msi" /qn TARGETDIR="%TEMP_DIR%\PYTHON" || (
+        start /wait msiexec /a "%ARCHIVE%.msi" /qn TARGETDIR="%TEMP_DIR%\PYTHON" || (
             call :log "-!failed"
             exit /b 1
         )
         call :log "-%%L_extracted"
     )
+    timeout /t 2 >nul 2>&1
 
     call :log "+venv_patching"
     move "%TEMP_DIR%\PYTHON\Lib\venv" "%EMBPY_DIR%\Lib\site-packages" >nul 2>&1 || exit /b 1
@@ -191,7 +192,7 @@ goto :main
     ) > env.bat
     (
         echo @echo off
-        echo call env.bat
+        echo call env
         echo cmd /k
     ) > start_env.bat
     call :log "-env_script_created"
